@@ -168,6 +168,25 @@ class Scraper:
 				return False
 
 		return element
+	
+	def find_elements(self, selector, exit_on_missing_element = True, wait_element_time = None):
+		collection = []
+
+		if wait_element_time is None:
+			wait_element_time = self.wait_element_time
+		try:
+			elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
+			for element in elements:
+				collection.append(element.text)
+		except TimeoutException:
+			if exit_on_missing_element:
+				print('ERROR: Timed out waiting for the element with css selector "' + selector + '" to load')
+				# End the program execution because we cannot find the element
+				exit()
+			else:
+				return False
+
+		return collection
 
 	def find_element_by_xpath(self, xpath, exit_on_missing_element = True, wait_element_time = None):
 		if wait_element_time is None:
