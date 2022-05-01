@@ -29,13 +29,7 @@ class Scraper:
 	# Automatically close driver on destruction of the object
 	def __del__(self):
 		print('closing')
-		f= open("guru1.txt","w+")
-		for i in range(10):
-			f.write("This is line %d\r\n" % (i+1))
-		f.close()
-		print('Saving data.')
 		self.driver.close()
-		print('closing...')
 		
 	# Add these options in order to make chrome driver appear as a human instead of detecting it as a bot
 	# Also change the 'cdc_' string in the chromedriver.exe with Notepad++ for example with 'abc_' to prevent detecting it as a bot
@@ -86,6 +80,7 @@ class Scraper:
 		print('Please login manually in the browser and after that you will be automatically loged in with cookies. Note that if you do not log in for five minutes, the program will turn off.')
 		is_logged_in = self.is_logged_in(300)
 
+		
 		# User is not logged in so exit from the program
 		if not is_logged_in:
 			exit()
@@ -239,6 +234,14 @@ class Scraper:
 			self.wait_random_time()
 
 		element = self.find_element(selector)
+
+		element.send_keys(text)
+		
+	def element_send_keys_by_xpath(self, selector, text, delay = True):
+		if delay:
+			self.wait_random_time()
+
+		element = self.find_element_by_xpath(selector)
 
 		element.send_keys(text)
 
