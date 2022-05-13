@@ -13,6 +13,7 @@ from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 
 class Scraper:
 	# This time is used when we are waiting for element to get loaded in the html
@@ -214,6 +215,16 @@ class Scraper:
 		elements = self.driver.find_elements_by_tag_name('input[type="checkbox"]')[selector_position]
 		elements.click()
 
+	def select_dropdown(self, selector, val, text = False):
+		element = self.find_element(selector)
+		select = Select(element)
+		if text:
+			select.select_by_visible_text(val)
+		else:
+			if type(val) == int:
+				val = str(val)
+			select.select_by_value(val)
+		
 	def add_emoji(self, selector, text):
 		JS_ADD_TEXT_TO_INPUT = """
 		var elm = arguments[0], txt = arguments[1];
