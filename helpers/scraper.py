@@ -47,7 +47,7 @@ class Scraper:
 
 		experimental_options = {
 			'excludeSwitches': ['enable-automation', 'enable-logging'],
-			'prefs': {'profile.default_content_setting_values.notifications': 2}
+			'prefs': {'profile.default_content_setting_values.notifications': 2, "credentials_enable_service": False, "profile.password_manager_enabled": False}
 		}
 
 		for argument in arguments:
