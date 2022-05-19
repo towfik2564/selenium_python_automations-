@@ -279,10 +279,10 @@ class Scraper:
 		while not element and loop < loop_count:
 			if delay:
 				self.wait_random_time()
-			try:
-				element = self.find_element_by_xpath(xpath)
+			element = self.find_element_by_xpath(xpath, False)
+			if element:
 				element.click()
-			except TimeoutException:
+			else:
 				print(f"button: {xpath} not clickable yet, trying again")
 				loop += 1
 		if not element:
