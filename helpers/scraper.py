@@ -285,6 +285,8 @@ class Scraper:
 			except TimeoutException:
 				print(f"button: {xpath} not clickable yet, trying again")
 				loop += 1
+		if not element:
+			exit()
 
 	# Wait random time before sending the keys to the element
 	def element_send_keys(self, selector, text, delay = True):
