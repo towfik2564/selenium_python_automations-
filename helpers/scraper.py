@@ -14,6 +14,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 class Scraper:
 	# This time is used when we are waiting for element to get loaded in the html
@@ -55,11 +56,14 @@ class Scraper:
 
 		for key, value in experimental_options.items():
 			self.driver_options.add_experimental_option(key, value)
+			
+		self.desired_capabilities = DesiredCapabilities.CHROME
+		self.desired_capabilities["goog:loggingPrefs"] = {"performance": "ALL"}
 
 	# Setup chrome driver with predefined options
 	def setup_driver(self):
 		self.s = Service('C:/chromedriver/chromedriver.exe')
-		self.driver = webdriver.Chrome(service=self.s, options = self.driver_options)
+		self.driver = webdriver.Chrome(service=self.s, options = self.driver_options, desired_capabilities=self.desired_capabilities)
 		self.driver.get(self.url)
 
 	# Add login functionality and load cookies if there are any with 'cookies_file_name'
@@ -342,3 +346,18 @@ class Scraper:
 			WebDriverWait(self.driver, self.wait_element_time).until(wait_until)
 		except:
 			print('Error waiting the element with selector "' + selector + '" to be invisible')
+	
+	def log_filter(self, log_):
+	    return (
+		log_["method"] == "Network.responseReceived"
+		and "XHR" in log_["params"]["type"]
+	    )
+
+	def get_network_info(self):
+	    logs_raw = self.driver.get_log("performance")
+	    logs = [json.loads(lr["message"])["message"] for lr in logs_raw]
+	    data = []
+	    for log in filter(log_filter, logs):
+		data.append(log)
+	    return data
+
